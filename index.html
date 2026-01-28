@@ -9,11 +9,10 @@
       --paper-bg: #f7f7f5;
       --grid-line: rgba(0,0,0,0.08);
       --grid-bold: rgba(0,0,0,0.12);
-      --text: #333;
-      --red: #e74c3c;
-      --blue: #3498db;
+      --text: #1f2933;
+      --red: #ff5c5c;
+      --blue: #4da3ff;
       --ink: rgba(0,0,0,0.85);
-      --panel-bg: rgba(255,255,255,0.92);
     }
     * { box-sizing: border-box; }
     html, body { height: 100%; }
@@ -22,9 +21,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #dedede;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      background: radial-gradient(circle at top, #e5f0ff, #cad5ff 32%, #b0b8ff 60%, #8b9eff 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
       color: var(--text);
+      -webkit-font-smoothing: antialiased;
     }
     .app {
       width: min(92vw, 1000px);
@@ -33,8 +33,16 @@
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
       user-select: none;
+      padding: 12px 12px 16px;
+      border-radius: 32px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
+      box-shadow:
+        0 24px 60px rgba(15,23,42,0.45),
+        0 0 0 1px rgba(255,255,255,0.6);
+      backdrop-filter: blur(26px) saturate(160%);
+      -webkit-backdrop-filter: blur(26px) saturate(160%);
     }
     .hud {
       width: 100%;
@@ -42,27 +50,73 @@
       justify-content: space-between;
       align-items: center;
       font-size: 14px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.45));
+      box-shadow:
+        0 10px 25px rgba(15,23,42,0.25),
+        0 0 0 1px rgba(255,255,255,0.75);
+      backdrop-filter: blur(18px) saturate(170%);
+      -webkit-backdrop-filter: blur(18px) saturate(170%);
+    }
+    .title-wrap { display: flex; align-items: center; gap: 6px; }
+    .title-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: conic-gradient(from 210deg, #ff9f9f, #ffd39f, #fff49f, #a6ffcf, #9fd0ff, #d2b3ff, #ff9fef, #ff9f9f);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 4px 10px rgba(15,23,42,0.3);
     }
     .title {
       font-weight: 800;
-      letter-spacing: 0.5px;
-      text-shadow: 0 1px 0 rgba(255,255,255,0.6);
+      letter-spacing: 0.6px;
+      font-size: 16px;
+      background: linear-gradient(120deg, #111827, #2563eb);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
     }
     .turn {
-      padding: 6px 10px;
-      border-radius: 8px;
-      background: rgba(255,255,255,0.7);
-      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+      box-shadow:
+        0 4px 10px rgba(15,23,42,0.18),
+        0 0 0 1px rgba(255,255,255,0.9);
+      font-weight: 600;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .legend { opacity: 0.7; }
+    .turn-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff5c5c;
+      box-shadow: 0 0 8px rgba(255,92,92,0.9);
+    }
+    .legend {
+      opacity: 0.75;
+      font-size: 12px;
+      padding: 2px 10px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.5));
+      box-shadow: 0 4px 10px rgba(15,23,42,0.18);
+    }
     .canvas-wrap {
       position: relative;
       flex: 1;
       width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      margin-top: 4px;
+      border-radius: 24px;
+      box-shadow:
+        0 20px 40px rgba(15,23,42,0.35),
+        0 0 0 1px rgba(255,255,255,0.9);
       overflow: hidden;
-      background: var(--paper-bg);
+      background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
+      backdrop-filter: blur(30px) saturate(160%);
+      -webkit-backdrop-filter: blur(30px) saturate(160%);
     }
     canvas {
       width: 100%;
@@ -92,56 +146,121 @@
     .panel {
       min-width: 60%;
       max-width: 80%;
-      padding: 20px 24px;
-      border-radius: 12px;
-      background: var(--panel-bg);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-      border: 1.5px dashed rgba(0,0,0,0.15);
+      padding: 22px 24px 20px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+      box-shadow:
+        0 18px 40px rgba(15,23,42,0.35),
+        0 0 0 1px rgba(255,255,255,0.96);
       text-align: center;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      position: relative;
+      overflow: hidden;
     }
-    .panel h1 { margin: 8px 0 0; font-size: 26px; }
-    .panel p { margin: 8px 0 12px; opacity: 0.8; }
-    .btns { display: flex; gap: 12px; justify-content: center; }
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(from 210deg, rgba(255,255,255,0.6), rgba(180,220,255,0.4), rgba(255,255,255,0.0), rgba(220,200,255,0.35), rgba(255,255,255,0.6));
+      opacity: 0.5;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+    .panel-inner { position: relative; z-index: 1; }
+    .panel h1 { margin: 6px 0 0; font-size: 26px; letter-spacing: 0.05em; }
+    .panel p { margin: 8px 0 14px; opacity: 0.8; font-size: 13px; }
+    .btns { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
     .btn {
       appearance: none;
       padding: 10px 18px;
-      border-radius: 10px;
-      border: 2px solid #333;
-      background: #fff;
-      box-shadow: 3px 3px 0 #333;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.9);
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(240,246,255,0.96));
+      box-shadow:
+        0 10px 20px rgba(15,23,42,0.25),
+        0 0 0 0.8px rgba(148,163,184,0.7);
       cursor: pointer;
-      font-weight: 800;
-      transition: transform 0.06s ease, box-shadow 0.06s ease;
+      font-weight: 700;
+      font-size: 14px;
+      color: #0f172a;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.12s ease;
     }
-    .btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 #333; }
-    .btn:active { transform: translate(1px, 1px); box-shadow: 2px 2px 0 #333; }
-    .btn.primary { border-color: var(--blue); box-shadow: 3px 3px 0 var(--blue); }
-    .btn.danger { border-color: var(--red); box-shadow: 3px 3px 0 var(--red); }
+    .btn span.badge {
+      font-size: 11px;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.06);
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 12px 24px rgba(15,23,42,0.3),
+        0 0 0 1px rgba(148,163,184,0.9);
+    }
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+      box-shadow: 0 6px 14px rgba(15,23,42,0.3);
+    }
+    .btn.primary {
+      background: radial-gradient(circle at 0 0, #e0f2ff, #c4daff);
+      box-shadow:
+        0 12px 24px rgba(37,99,235,0.4),
+        0 0 0 0.8px rgba(59,130,246,0.8);
+      color: #0b1f3b;
+    }
+    .btn.danger {
+      background: radial-gradient(circle at 0 0, #ffe4e4, #ffc3c3);
+      box-shadow:
+        0 12px 24px rgba(248,113,113,0.5),
+        0 0 0 0.8px rgba(248,113,113,0.9);
+      color: #3b0b0b;
+    }
   </style>
 </head>
 <body>
   <div class="app">
     <div class="hud">
-      <div class="title">纸上飞机大战</div>
-      <div id="turn" class="turn">红方回合</div>
-      <div class="legend">操作：按住己方飞机，快速甩动并松开</div>
+      <div class="title-wrap">
+        <div class="title-icon"></div>
+        <div class="title">纸上飞机大战</div>
+      </div>
+      <div class="turn" id="turn">
+        <span class="turn-dot" id="turnDot"></span>
+        <span id="turnText">红方回合</span>
+      </div>
+      <div class="legend">按住彩色纸飞机快速甩动，用航线穿过敌机 · 拾取道具强化属性</div>
     </div>
     <div class="canvas-wrap">
       <canvas id="game"></canvas>
       <div id="overlay" class="overlay" style="display:none"></div>
       <div id="ui" class="ui-layer">
         <div id="menuPanel" class="panel">
-          <h1>纸上飞机大战</h1>
-          <p>双人回合制 · 手绘涂鸦风 · 甩动鼠标发起进攻</p>
-          <div class="btns">
-            <button id="startBtn" class="btn primary">开始游戏</button>
+          <div class="panel-inner">
+            <h1>纸上飞机大战</h1>
+            <p>本地双人 · 纸飞机有生命值与护盾，拾取随机道具提升攻击或恢复状态。</p>
+            <div class="btns">
+              <button id="startBtn" class="btn primary">
+                开始游戏
+                <span class="badge">双人对战</span>
+              </button>
+            </div>
           </div>
         </div>
         <div id="gameOverPanel" class="panel" style="display:none">
-          <h1 id="gameOverTitle">游戏结束</h1>
-          <p id="gameOverMsg">红蓝双方已分出胜负</p>
-          <div class="btns">
-            <button id="restartBtn" class="btn danger">重新开始</button>
+          <div class="panel-inner">
+            <h1 id="gameOverTitle">游戏结束</h1>
+            <p id="gameOverMsg">红蓝双方已分出胜负。</p>
+            <div class="btns">
+              <button id="restartBtn" class="btn danger">
+                重新开始
+                <span class="badge">R 键</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -149,14 +268,13 @@
   </div>
 
   <script>
-    // ========== 基本设置 ==========
-    const CANVAS_BASE_W = 960; // 逻辑宽度（4:3）
-    const CANVAS_BASE_H = 720; // 逻辑高度（4:3）
-    const GRID = 36;           // 网格间距
-    const FRICTION = 0.95;     // 速度摩擦（每帧）
-    const MIN_SPEED = 0.6;     // 停止阈值（像素/帧）
-    const MAX_INIT_SPEED = 28; // 初始速度上限（像素/帧）
-    const SELECT_HALO = 10;    // 选择容差
+    const CANVAS_BASE_W = 960;
+    const CANVAS_BASE_H = 720;
+    const GRID = 36;
+    const FRICTION = 0.95;
+    const MIN_SPEED = 0.6;
+    const MAX_INIT_SPEED = 28;
+    const SELECT_HALO = 10;
 
     const canvas = document.getElementById('game');
     const overlay = document.getElementById('overlay');
@@ -168,6 +286,8 @@
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
     const turnEl = document.getElementById('turn');
+    const turnDot = document.getElementById('turnDot');
+    const turnText = document.getElementById('turnText');
     const ctx = canvas.getContext('2d');
 
     let DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
@@ -189,78 +309,83 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    // ========== 游戏状态 ==========
     const state = {
-      gamePhase: 'menu', // menu | playing | gameover
-      currentPlayer: 0,  // 0: 红方, 1: 蓝方
+      gamePhase: 'menu',
+      currentPlayer: 0,
       gameOver: false,
-      strokes: [],     // 纸上保留的所有笔迹
-      effects: [],     // 动画特效（溅射/爆炸等）
-      flick: null,     // 当前滑行动画对象
-      turnCue: null,   // 回合切换提示
-      planes: [[], []] // 双方飞机
+      strokes: [],
+      effects: [],
+      flick: null,
+      turnCue: null,
+      planes: [[], []],
+      powerups: []
     };
 
-    // 飞机定义
+    const BASE_HP = 4;
+
     function createPlane(x, y, color, orientation) {
       const heading = orientation === 'right' ? 0 : Math.PI;
       return {
         x, y,
-        size: 28,
+        size: 32,
         color,
-        orientation, // 'right' or 'left'
-        heading,     // 朝向（弧度）
+        orientation,
+        heading,
         alive: true,
-        alpha: 1
+        alpha: 1,
+        maxHP: BASE_HP,
+        hp: BASE_HP,
+        attackMultiplier: 1,
+        shield: 0,
+        regenOnHit: 0
       };
     }
 
     function initPlanes() {
-      state.planes[0] = []; state.planes[1] = [];
-      const margin = 60;
-      const spacing = (CANVAS_BASE_H - margin * 2) / 5; // 平均分 5 段
-      // 红方（左）
+      state.planes[0] = [];
+      state.planes[1] = [];
+      const margin = 70;
+      const spacing = (CANVAS_BASE_H - margin * 2) / 5;
       for (let i = 0; i < 5; i++) {
         const y = margin + spacing * (i + 0.5);
-        state.planes[0].push(createPlane(90, y, '#e74c3c', 'right'));
+        state.planes[0].push(createPlane(110, y, '#ff5c5c', 'right'));
       }
-      // 蓝方（右）
       for (let i = 0; i < 5; i++) {
         const y = margin + spacing * (i + 0.5);
-        state.planes[1].push(createPlane(CANVAS_BASE_W - 90, y, '#3498db', 'left'));
+        state.planes[1].push(createPlane(CANVAS_BASE_W - 110, y, '#4da3ff', 'left'));
       }
     }
 
-    // ========== 纸张背景绘制（格纹 + 噪点 + 边缘阴影） ==========
     function drawPaperBackground() {
-      // 背景底色
-      ctx.fillStyle = '#f7f7f5';
+      ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, CANVAS_BASE_W, CANVAS_BASE_H);
 
-      // 纸张边缘阴影
-      const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_BASE_H);
-      grad.addColorStop(0, 'rgba(0,0,0,0.06)');
-      grad.addColorStop(0.04, 'rgba(0,0,0,0)');
-      grad.addColorStop(0.96, 'rgba(0,0,0,0)');
-      grad.addColorStop(1, 'rgba(0,0,0,0.06)');
-      ctx.fillStyle = grad;
+      const radial = ctx.createRadialGradient(
+        CANVAS_BASE_W / 2,
+        CANVAS_BASE_H / 2,
+        CANVAS_BASE_W / 4,
+        CANVAS_BASE_W / 2,
+        CANVAS_BASE_H / 2,
+        CANVAS_BASE_W / 1.2
+      );
+      radial.addColorStop(0, 'rgba(15,23,42,0.0)');
+      radial.addColorStop(1, 'rgba(15,23,42,0.12)');
+      ctx.fillStyle = radial;
       ctx.fillRect(0, 0, CANVAS_BASE_W, CANVAS_BASE_H);
 
-      // 轻微纸纹噪点
-      const noiseCount = Math.floor((CANVAS_BASE_W * CANVAS_BASE_H * SCALE_X * SCALE_Y) / 1600);
-      ctx.globalAlpha = 0.045;
+      const noiseCount = Math.floor((CANVAS_BASE_W * CANVAS_BASE_H * SCALE_X * SCALE_Y) / 1500);
+      ctx.globalAlpha = 0.05;
       ctx.fillStyle = '#000';
       for (let i = 0; i < noiseCount; i++) {
         const x = Math.random() * CANVAS_BASE_W;
         const y = Math.random() * CANVAS_BASE_H;
-        const r = Math.random() * 1.2 + 0.2;
+        const r = Math.random() * 1.1 + 0.2;
         ctx.fillRect(x, y, r, r);
       }
       ctx.globalAlpha = 1;
 
-      // 竖/横细格
       ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(0,0,0,0.09)';
+      ctx.strokeStyle = 'rgba(148,163,184,0.35)';
       ctx.beginPath();
       for (let x = 0; x <= CANVAS_BASE_W; x += GRID) {
         ctx.moveTo(x + 0.5, 0);
@@ -272,8 +397,7 @@
       }
       ctx.stroke();
 
-      // 加粗辅助线（每 5 格）
-      ctx.strokeStyle = 'rgba(0,0,0,0.12)';
+      ctx.strokeStyle = 'rgba(148,163,184,0.55)';
       ctx.beginPath();
       for (let x = 0; x <= CANVAS_BASE_W; x += GRID * 5) {
         ctx.moveTo(x + 0.5, 0);
@@ -286,14 +410,12 @@
       ctx.stroke();
     }
 
-    // ========== 几何工具（考虑旋转） ==========
     function getTriangleVertices(plane) {
       const s = plane.size;
-      // 局部顶点（默认指向右）
       const local = [
         { x: s, y: 0 },
-        { x: -s, y: -s * 0.7 },
-        { x: -s, y: s * 0.7 }
+        { x: -s * 0.8, y: -s * 0.6 },
+        { x: -s * 0.8, y: s * 0.6 }
       ];
       const c = Math.cos(plane.heading), d = Math.sin(plane.heading);
       return local.map(v => ({ x: plane.x + v.x * c - v.y * d, y: plane.y + v.x * d + v.y * c }));
@@ -333,7 +455,6 @@
              segIntersect(a, b, tri[2], tri[0]);
     }
 
-    // ========== 绘制：飞机（涂鸦风 + 旋转） ==========
     function drawPlane(plane) {
       ctx.save();
       ctx.translate(plane.x, plane.y);
@@ -341,40 +462,80 @@
       ctx.globalAlpha = plane.alpha;
 
       const s = plane.size;
-      // 机体三角形
+      const gradBody = ctx.createLinearGradient(-s, -s, s, s);
+      gradBody.addColorStop(0, 'rgba(255,255,255,0.98)');
+      gradBody.addColorStop(1, plane.color + 'ee');
+
       ctx.beginPath();
       ctx.moveTo(s, 0);
-      ctx.lineTo(-s, -s * 0.7);
-      ctx.lineTo(-s, s * 0.7);
+      ctx.lineTo(-s * 0.9, -s * 0.55);
+      ctx.lineTo(-s * 0.4, -s * 0.22);
+      ctx.lineTo(-s * 0.9, s * 0.55);
       ctx.closePath();
-      ctx.lineWidth = 2.4;
-      ctx.strokeStyle = plane.color;
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.fillStyle = gradBody;
+      ctx.strokeStyle = 'rgba(15,23,42,0.7)';
+      ctx.lineWidth = 2.2;
       ctx.fill();
       ctx.stroke();
 
-      // 手绘质感噪点
-      ctx.globalAlpha = 0.06 * plane.alpha;
-      for (let i = 0; i < 40; i++) {
-        const rx = (Math.random() - 0.5) * s * 0.8;
-        const ry = (Math.random() - 0.5) * s * 0.8;
-        ctx.beginPath();
-        ctx.arc(rx, ry, Math.random() * 2.0 + 0.4, 0, Math.PI * 2);
-        ctx.fillStyle = '#000';
-        ctx.fill();
-      }
-      ctx.globalAlpha = plane.alpha;
-
-      // 机翼/折痕（涂鸦线）
-      ctx.lineWidth = 1.5;
-      ctx.strokeStyle = 'rgba(0,0,0,0.5)';
       ctx.beginPath();
-      ctx.moveTo(-s * 0.2, -s * 0.5);
-      ctx.lineTo(s * 0.4, 0);
-      ctx.moveTo(-s * 0.2, s * 0.5);
-      ctx.lineTo(s * 0.4, 0);
+      ctx.moveTo(-s * 0.4, -s * 0.22);
+      ctx.lineTo(s, 0);
+      ctx.moveTo(-s * 0.2, 0);
+      ctx.lineTo(s * 0.5, 0);
+      ctx.strokeStyle = 'rgba(15,23,42,0.4)';
+      ctx.lineWidth = 1;
       ctx.stroke();
 
+      ctx.globalAlpha = 0.05 * plane.alpha;
+      ctx.fillStyle = '#000';
+      for (let i = 0; i < 40; i++) {
+        const rx = (Math.random() - 0.5) * s * 0.7;
+        const ry = (Math.random() - 0.5) * s * 0.7;
+        ctx.beginPath();
+        ctx.arc(rx, ry, Math.random() * 1.8 + 0.3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      const hpRatio = plane.hp / plane.maxHP;
+      const barW = s * 1.6;
+      const barH = 5;
+      const bx = plane.x - barW / 2;
+      const by = plane.y - s - 12;
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      ctx.fillStyle = 'rgba(15,23,42,0.15)';
+      ctx.fillRect(bx, by, barW, barH);
+      const hpColor = plane.shield > 0
+        ? 'rgba(56,189,248,0.95)'
+        : (hpRatio > 0.5 ? 'rgba(22,163,74,0.95)' : (hpRatio > 0.25 ? 'rgba(234,179,8,0.95)' : 'rgba(248,113,113,0.95)'));
+      ctx.fillStyle = hpColor;
+      ctx.fillRect(bx, by, barW * Math.max(0, hpRatio), barH);
+      ctx.strokeStyle = 'rgba(255,255,255,0.8)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(bx + 0.5, by + 0.5, barW - 1, barH - 1);
+
+      if (plane.shield > 0) {
+        const r = 6;
+        const cx = bx + barW + 10;
+        const cy = by + barH / 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        const shieldGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, r);
+        shieldGrad.addColorStop(0, 'rgba(255,255,255,0.98)');
+        shieldGrad.addColorStop(1, 'rgba(56,189,248,0.9)');
+        ctx.fillStyle = shieldGrad;
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(15,23,42,0.5)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(15,23,42,0.8)';
+        ctx.font = '10px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(plane.shield), cx, cy);
+      }
       ctx.restore();
     }
 
@@ -384,49 +545,46 @@
       for (let l = 0; l < layers; l++) {
         ctx.beginPath();
         for (let i = 0; i < points.length; i++) {
-          const jitter = (Math.random() - 0.5) * (l === 0 ? 0.6 : 1.2);
+          const jitter = (Math.random() - 0.5) * (l === 0 ? 0.7 : 1.3);
           const x = points[i].x + jitter;
           const y = points[i].y + jitter;
           if (i === 0) ctx.moveTo(x, y);
           else ctx.lineTo(x, y);
         }
-        ctx.lineWidth = 1.8 + l * 0.6;
+        ctx.lineWidth = 1.6 + l * 0.6;
         ctx.lineJoin = 'round';
         ctx.lineCap = 'round';
-        ctx.strokeStyle = `rgba(0,0,0,${0.22 + l * 0.14})`;
+        ctx.strokeStyle = `rgba(15,23,42,${0.22 + l * 0.14})`;
         ctx.stroke();
       }
     }
 
-    // 飞行速度线（速度感特效）
     function drawSpeedLines(pos, vel) {
       const speed = Math.hypot(vel.x, vel.y);
       if (speed < 2) return;
-      const dir = Math.atan2(vel.y, vel.x);
-      const back = dir + Math.PI; // 反向
-      const count = Math.min(12, Math.floor(speed));
+      const dir = Math.atan2(vel.y, vel.x) + Math.PI;
+      const count = Math.min(14, Math.floor(speed));
       ctx.save();
       for (let i = 0; i < count; i++) {
-        const len = 6 + Math.random() * speed * 0.6;
-        const spread = (Math.random() - 0.5) * 0.6;
-        const angle = back + spread;
+        const len = 8 + Math.random() * speed * 0.7;
+        const spread = (Math.random() - 0.5) * 0.8;
+        const angle = dir + spread;
         const x2 = pos.x + Math.cos(angle) * len;
         const y2 = pos.y + Math.sin(angle) * len;
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y);
         ctx.lineTo(x2, y2);
-        ctx.lineWidth = 1 + Math.random() * 1.4;
-        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 1 + Math.random() * 1.2;
+        ctx.strokeStyle = 'rgba(15,23,42,0.35)';
         ctx.stroke();
       }
       ctx.restore();
     }
 
-    // 特效：溅射 + 爆炸
     function drawEffects() {
       for (const e of state.effects) {
         if (e.type === 'splatter') {
-          const count = 22;
+          const count = 20;
           for (let i = 0; i < count; i++) {
             const ang = Math.random() * Math.PI * 2;
             const dist = Math.random() * e.radius;
@@ -435,20 +593,22 @@
             ctx.globalAlpha = e.alpha * (0.6 + Math.random() * 0.4);
             ctx.fillStyle = e.color;
             ctx.beginPath();
-            ctx.arc(x, y, Math.random() * 3 + 0.8, 0, Math.PI * 2);
+            ctx.arc(x, y, Math.random() * 2.4 + 0.8, 0, Math.PI * 2);
             ctx.fill();
           }
           ctx.globalAlpha = 1;
         } else if (e.type === 'explosion') {
-          // 扩散圆环
           ctx.save();
           ctx.globalAlpha = e.alpha;
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = e.color;
+          const grad = ctx.createRadialGradient(e.x, e.y, 0, e.x, e.y, e.radius);
+          grad.addColorStop(0, 'rgba(255,255,255,0.95)');
+          grad.addColorStop(0.3, e.color);
+          grad.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.fillStyle = grad;
           ctx.beginPath();
           ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
-          ctx.stroke();
-          // 碎片（纸片线段）
+          ctx.fill();
+
           for (const sh of e.shards) {
             const x1 = e.x + Math.cos(sh.angle) * sh.pos;
             const y1 = e.y + Math.sin(sh.angle) * sh.pos;
@@ -457,57 +617,196 @@
             ctx.beginPath();
             ctx.moveTo(x1, y1);
             ctx.lineTo(x2, y2);
-            ctx.lineWidth = 1.6;
-            ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+            ctx.lineWidth = 1.4;
+            ctx.strokeStyle = 'rgba(15,23,42,0.65)';
             ctx.stroke();
-            // 更新碎片位置
             sh.pos += sh.speed;
-            sh.len *= 0.98;
+            sh.len *= 0.97;
           }
           ctx.restore();
-          // 生命周期更新
-          e.radius += 2.2;
+          e.radius += 2.4;
           e.alpha -= 0.035;
         }
       }
-      // 清理
       state.effects = state.effects.filter(e => e.alpha > 0);
     }
 
-    // 选中提示：按住己方飞机时显示环形提示
+    function spawnRandomPowerup() {
+      if (state.powerups.length >= 3) return;
+      const types = ['attack', 'heal', 'shield'];
+      const type = types[Math.floor(Math.random() * types.length)];
+      const x = CANVAS_BASE_W * (0.25 + 0.5 * Math.random());
+      const y = CANVAS_BASE_H * (0.2 + 0.6 * Math.random());
+      state.powerups.push({
+        x, y,
+        type,
+        radius: 16,
+        taken: false,
+        pulse: Math.random() * Math.PI * 2
+      });
+    }
+
+    function drawPowerups() {
+      const t = performance.now() / 600;
+      for (const p of state.powerups) {
+        if (p.taken) continue;
+        const r = p.radius + Math.sin(t * 4 + p.pulse) * 2;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.globalAlpha = 0.9;
+        let grad;
+        if (p.type === 'attack') {
+          grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+          grad.addColorStop(0, 'rgba(254,242,242,0.98)');
+          grad.addColorStop(1, 'rgba(248,113,113,0.9)');
+        } else if (p.type === 'heal') {
+          grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+          grad.addColorStop(0, 'rgba(240,253,250,0.98)');
+          grad.addColorStop(1, 'rgba(34,197,94,0.9)');
+        } else {
+          grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
+          grad.addColorStop(0, 'rgba(239,246,255,0.98)');
+          grad.addColorStop(1, 'rgba(59,130,246,0.9)');
+        }
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = 'rgba(15,23,42,0.4)';
+        ctx.stroke();
+
+        ctx.fillStyle = 'rgba(15,23,42,0.9)';
+        ctx.globalAlpha = 0.95;
+        ctx.beginPath();
+        if (p.type === 'attack') {
+          ctx.moveTo(-4, -8);
+          ctx.lineTo(0, 0);
+          ctx.lineTo(-3, 0);
+          ctx.lineTo(4, 8);
+          ctx.strokeStyle = 'rgba(15,23,42,0.9)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        } else if (p.type === 'heal') {
+          ctx.lineWidth = 2;
+          ctx.moveTo(-6, 0);
+          ctx.lineTo(6, 0);
+          ctx.moveTo(0, -6);
+          ctx.lineTo(0, 6);
+          ctx.strokeStyle = 'rgba(15,23,42,0.9)';
+          ctx.stroke();
+        } else {
+          ctx.moveTo(0, -7);
+          ctx.lineTo(6, -2);
+          ctx.lineTo(4, 6);
+          ctx.lineTo(-4, 6);
+          ctx.lineTo(-6, -2);
+          ctx.closePath();
+          ctx.strokeStyle = 'rgba(15,23,42,0.9)';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function tryPickupPowerups(plane, prevPos = null) {
+      for (const p of state.powerups) {
+        if (p.taken) continue;
+        if (prevPos) {
+          const a = prevPos;
+          const b = { x: plane.x, y: plane.y };
+          const center = { x: p.x, y: p.y };
+          const radius = p.radius + plane.size * 0.4;
+          const ab = { x: b.x - a.x, y: b.y - a.y };
+          const ac = { x: center.x - a.x, y: center.y - a.y };
+          const ab2 = ab.x * ab.x + ab.y * ab.y;
+          if (ab2 > 0) {
+            let t = (ac.x * ab.x + ac.y * ab.y) / ab2;
+            t = Math.max(0, Math.min(1, t));
+            const closest = { x: a.x + ab.x * t, y: a.y + ab.y * t };
+            const dx = closest.x - center.x;
+            const dy = closest.y - center.y;
+            if (dx * dx + dy * dy <= radius * radius) {
+              p.taken = true;
+              applyPowerupToPlane(p.type, plane);
+              state.effects.push({
+                type: 'explosion',
+                x: p.x,
+                y: p.y,
+                color: p.type === 'attack' ? '#f97373' : (p.type === 'heal' ? '#34d399' : '#38bdf8'),
+                alpha: 0.9,
+                radius: 10,
+                shards: []
+              });
+              continue;
+            }
+          }
+        }
+        const dx = plane.x - p.x;
+        const dy = plane.y - p.y;
+        if (Math.hypot(dx, dy) <= p.radius + plane.size * 0.5) {
+          p.taken = true;
+          applyPowerupToPlane(p.type, plane);
+          state.effects.push({
+            type: 'explosion',
+            x: p.x,
+            y: p.y,
+            color: p.type === 'attack' ? '#f97373' : (p.type === 'heal' ? '#34d399' : '#38bdf8'),
+            alpha: 0.9,
+            radius: 10,
+            shards: []
+          });
+        }
+      }
+      state.powerups = state.powerups.filter(p => !p.taken);
+    }
+
+    function applyPowerupToPlane(type, plane) {
+      if (type === 'attack') {
+        plane.attackMultiplier = Math.min(3, plane.attackMultiplier + 0.5);
+      } else if (type === 'heal') {
+        plane.hp = Math.min(plane.maxHP, plane.hp + 2);
+      } else if (type === 'shield') {
+        plane.shield = Math.min(3, plane.shield + 1);
+      }
+    }
+
     function drawSelection(plane) {
       ctx.save();
       const t = performance.now();
-      const pulse = (Math.sin(t / 180) + 1) * 0.5;
-      const r = plane.size + 12 + pulse * 4;
-      ctx.lineWidth = 2.5;
+      const pulse = (Math.sin(t / 200) + 1) * 0.5;
+      const r = plane.size + 14 + pulse * 4;
+      ctx.lineWidth = 2.4;
       ctx.strokeStyle = plane.color;
-      ctx.globalAlpha = 0.5;
-      ctx.setLineDash([8, 6]);
+      ctx.globalAlpha = 0.55;
+      ctx.setLineDash([9, 7]);
       ctx.beginPath();
       ctx.arc(plane.x, plane.y, r, 0, Math.PI * 2);
       ctx.stroke();
       ctx.setLineDash([]);
-      ctx.globalAlpha = 0.25;
+      ctx.globalAlpha = 0.27;
       ctx.beginPath();
       ctx.arc(plane.x, plane.y, r - 3, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
 
-    // 回合切换提示条
     function drawTurnCue() {
       const cue = state.turnCue;
       if (!cue) return;
-      const w = 240, h = 40;
+      const w = 260, h = 40;
       const x = CANVAS_BASE_W / 2 - w / 2;
-      const y = 14;
+      const y = 16;
       ctx.save();
       ctx.globalAlpha = Math.max(0, cue.alpha);
-      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      const grad = ctx.createLinearGradient(x, y, x + w, y + h);
+      grad.addColorStop(0, 'rgba(255,255,255,0.98)');
+      grad.addColorStop(1, 'rgba(226,232,240,0.95)');
+      ctx.fillStyle = grad;
       ctx.strokeStyle = cue.color;
       ctx.lineWidth = 2;
-      const r = 10;
+      const r = 18;
       ctx.beginPath();
       ctx.moveTo(x + r, y);
       ctx.lineTo(x + w - r, y);
@@ -523,7 +822,7 @@
       ctx.stroke();
 
       ctx.fillStyle = cue.color;
-      ctx.font = 'bold 20px sans-serif';
+      ctx.font = '600 18px system-ui';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(cue.text, x + w / 2, y + h / 2);
@@ -533,10 +832,9 @@
       if (cue.life <= 0) state.turnCue = null;
     }
 
-    // ========== 输入与交互 ==========
     let pointerDown = false;
     let selectedPlane = null;
-    let trace = []; // 最近的鼠标轨迹（用于速度计算）
+    let trace = [];
 
     function canvasToLocal(e) {
       const rect = canvas.getBoundingClientRect();
@@ -547,7 +845,7 @@
     }
 
     function isPlaneSelectable(plane) {
-      return plane.alive && ((state.currentPlayer === 0 && plane.color === '#e74c3c') || (state.currentPlayer === 1 && plane.color === '#3498db'));
+      return plane.alive && ((state.currentPlayer === 0 && plane.color === '#ff5c5c') || (state.currentPlayer === 1 && plane.color === '#4da3ff'));
     }
 
     function pickPlaneAt(x, y) {
@@ -583,16 +881,14 @@
     });
 
     function clampToCanvas(pt) {
-      return { x: Math.max(6, Math.min(CANVAS_BASE_W - 6, pt.x)), y: Math.max(6, Math.min(CANVAS_BASE_H - 6, pt.y)) };
+      return { x: Math.max(10, Math.min(CANVAS_BASE_W - 10, pt.x)), y: Math.max(10, Math.min(CANVAS_BASE_H - 10, pt.y)) };
     }
 
-    canvas.addEventListener('mouseup', (e) => {
+    canvas.addEventListener('mouseup', () => {
       if (!pointerDown) return;
       pointerDown = false;
       canvas.style.cursor = 'crosshair';
       if (!selectedPlane) return;
-
-      // 计算释放瞬间速度向量：使用最近 ~80ms 与最后点差值
       if (trace.length < 2) { selectedPlane = null; return; }
       const last = trace[trace.length - 1];
       let refIdx = trace.length - 1;
@@ -609,7 +905,7 @@
       vx *= scale; vy *= scale; v0 *= scale;
 
       const start = { x: selectedPlane.x, y: selectedPlane.y };
-      const points = [ { x: start.x, y: start.y } ];
+      const points = [{ x: start.x, y: start.y }];
       state.flick = {
         plane: selectedPlane,
         pos: { x: start.x, y: start.y },
@@ -629,30 +925,44 @@
       }
     });
 
-    // ========== 碰撞与摧毁 ==========
-    function tryHitEnemies(prev, cur, attackerSide) {
+    function applyDamageToPlane(plane, damage) {
+      let dmgLeft = damage;
+      if (plane.shield > 0) {
+        const absorb = Math.min(plane.shield, dmgLeft);
+        plane.shield -= absorb;
+        dmgLeft -= absorb * 0.5;
+      }
+      if (dmgLeft > 0) {
+        plane.hp -= dmgLeft;
+      }
+      if (plane.hp <= 0 && plane.alive) {
+        plane.alive = false;
+        const color = plane.color;
+        state.effects.push({ type: 'splatter', x: plane.x, y: plane.y, color, alpha: 1, radius: 32 });
+        const shards = Array.from({ length: 20 }, () => ({ angle: Math.random() * Math.PI * 2, speed: 2 + Math.random() * 3, len: 12 + Math.random() * 16, pos: 0 }));
+        state.effects.push({ type: 'explosion', x: plane.x, y: plane.y, color, alpha: 1, radius: 12, shards });
+      }
+    }
+
+    function tryHitEnemies(prev, cur, attackerSide, attackerPlane) {
       const defenderSide = attackerSide === 0 ? 1 : 0;
       for (const enemy of state.planes[defenderSide]) {
         if (!enemy.alive) continue;
         const tri = getTriangleVertices(enemy);
         if (segmentTriangleIntersect(prev, cur, tri)) {
-          enemy.alive = false;
-          // 溅射 + 爆炸效果
-          state.effects.push({ type: 'splatter', x: enemy.x, y: enemy.y, color: enemy.color, alpha: 1, radius: 26 });
-          const shards = Array.from({ length: 16 }, () => ({ angle: Math.random() * Math.PI * 2, speed: 2 + Math.random() * 3, len: 10 + Math.random() * 12, pos: 0 }));
-          state.effects.push({ type: 'explosion', x: enemy.x, y: enemy.y, color: enemy.color, alpha: 1, radius: 8, shards });
+          const dmg = 1 * attackerPlane.attackMultiplier;
+          applyDamageToPlane(enemy, dmg);
         }
       }
     }
 
-    // ========== 回合与胜负 ==========
     function updateTurnHUD() {
       if (state.gameOver) return;
-      const who = state.currentPlayer === 0 ? '红方回合' : '蓝方回合';
-      turnEl.textContent = who;
-      turnEl.style.border = '1px solid rgba(0,0,0,0.08)';
-      turnEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.06)';
-      turnEl.style.color = state.currentPlayer === 0 ? '#e74c3c' : '#3498db';
+      const isRed = state.currentPlayer === 0;
+      turnText.textContent = isRed ? '红方回合' : '蓝方回合';
+      const color = isRed ? '#ff5c5c' : '#4da3ff';
+      turnDot.style.background = color;
+      turnDot.style.boxShadow = `0 0 10px ${color}`;
     }
 
     function checkWin() {
@@ -663,7 +973,7 @@
         state.gamePhase = 'gameover';
         const msg = !redAlive && !blueAlive ? '平局' : (!redAlive ? '蓝方胜利' : '红方胜利');
         gameOverTitle.textContent = msg;
-        gameOverMsg.textContent = '点击重新开始可再战一局';
+        gameOverMsg.textContent = '拾取道具，合理走位，再来一局手感对战。';
         menuPanel.style.display = 'none';
         gameOverPanel.style.display = '';
         uiLayer.style.display = 'grid';
@@ -673,10 +983,13 @@
     function endTurn() {
       state.currentPlayer = state.currentPlayer === 0 ? 1 : 0;
       const text = state.currentPlayer === 0 ? '红方回合' : '蓝方回合';
-      const color = state.currentPlayer === 0 ? '#e74c3c' : '#3498db';
+      const color = state.currentPlayer === 0 ? '#ff5c5c' : '#4da3ff';
       state.turnCue = { text, color, alpha: 1, life: 60 };
       updateTurnHUD();
       checkWin();
+      if (!state.gameOver && Math.random() < 0.6) {
+        spawnRandomPowerup();
+      }
     }
 
     function newGame() {
@@ -686,10 +999,10 @@
       state.strokes = [];
       state.effects = [];
       state.flick = null;
-      state.turnCue = { text: '红方回合', color: '#e74c3c', alpha: 1, life: 60 };
+      state.turnCue = { text: '红方回合', color: '#ff5c5c', alpha: 1, life: 60 };
+      state.powerups = [];
       initPlanes();
       updateTurnHUD();
-      // UI
       menuPanel.style.display = 'none';
       gameOverPanel.style.display = 'none';
       uiLayer.style.display = 'none';
@@ -701,67 +1014,55 @@
       if (e.key.toLowerCase() === 'r') { newGame(); }
     });
 
-    // ========== 主循环 ==========
     function step() {
-      // 清屏 & 背景
       drawPaperBackground();
-      // 回合提示
       drawTurnCue();
 
-      // 画保留的笔迹
       for (const s of state.strokes) drawStroke(s.points);
 
-      // 当前滑行的临时轨迹也画出
       if (state.flick) {
         drawStroke(state.flick.points);
         drawSpeedLines(state.flick.pos, state.flick.vel);
       }
 
-      // 飞机
+      drawPowerups();
+
       for (const p of state.planes[0]) if (p.alive || p.alpha > 0) drawPlane(p);
       for (const p of state.planes[1]) if (p.alive || p.alpha > 0) drawPlane(p);
 
-      // 选中提示（按住时）
       if (pointerDown && selectedPlane) drawSelection(selectedPlane);
 
-      // 特效
       drawEffects();
 
-      // 更新被摧毁飞机的淡出
       for (const side of [0,1]) {
         for (const p of state.planes[side]) {
           if (!p.alive && p.alpha > 0) p.alpha -= 0.05;
         }
       }
 
-      // 滑行动画更新
       if (state.flick) {
         const f = state.flick;
-        const prev = { x: f.pos.x, y: f.pos.y };
-        // 应用摩擦
+        const prevPos = { x: f.pos.x, y: f.pos.y };
         f.vel.x *= FRICTION;
         f.vel.y *= FRICTION;
         const speed = Math.hypot(f.vel.x, f.vel.y);
-        // 位移
         f.pos.x += f.vel.x;
         f.pos.y += f.vel.y;
-        // 边界限制
         f.pos = clampToCanvas(f.pos);
         f.points.push({ x: f.pos.x, y: f.pos.y });
 
-        // 当有速度时，让攻击方飞机朝向与速度方向逐步对齐（速度感）
-        const attackerSide = (f.plane.color === '#e74c3c') ? 0 : 1;
+        const attackerSide = (f.plane.color === '#ff5c5c') ? 0 : 1;
         const targetHeading = Math.atan2(f.vel.y, f.vel.x);
-        f.plane.heading = f.plane.heading + (targetHeading - f.plane.heading) * 0.15;
+        f.plane.heading = f.plane.heading + (targetHeading - f.plane.heading) * 0.18;
 
-        // 碰撞检测（当前段 prev->pos）
-        tryHitEnemies(prev, f.pos, attackerSide);
+        tryHitEnemies(prevPos, f.pos, attackerSide, f.plane);
+        tryPickupPowerups(f.plane, prevPos);
 
         if (speed < MIN_SPEED) {
-          // 停止：记录笔迹 & 更新飞机位置
           state.strokes.push({ points: f.points });
           f.plane.x = f.pos.x;
           f.plane.y = f.pos.y;
+          tryPickupPowerups(f.plane);
           state.flick = null;
           endTurn();
         }
@@ -770,7 +1071,6 @@
       requestAnimationFrame(step);
     }
 
-    // 初始：显示菜单
     updateTurnHUD();
     uiLayer.style.display = 'grid';
     requestAnimationFrame(step);
