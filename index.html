@@ -14,21 +14,17 @@
       --blue: #4da3ff;
       --ink: rgba(0,0,0,0.85);
     }
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-    html, body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { height: 100%; margin: 0; padding: 0; }
     body {
       display: flex;
+      align-items: stretch;
+      justify-content: center;
       background: radial-gradient(circle at top, #e5f0ff, #cad5ff 32%, #b0b8ff 60%, #8b9eff 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      overflow: hidden;
     }
     .app {
       width: 100vw;
@@ -39,7 +35,11 @@
       align-items: center;
       gap: 6px;
       user-select: none;
-      padding: 6px 8px 8px;
+      padding: 6px 6px 8px;
+      border-radius: 0;
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+      backdrop-filter: blur(18px) saturate(150%);
+      -webkit-backdrop-filter: blur(18px) saturate(150%);
     }
     .hud {
       width: 100%;
@@ -47,14 +47,12 @@
       justify-content: space-between;
       align-items: center;
       font-size: 12px;
-      padding: 6px 10px;
+      padding: 6px 8px;
       border-radius: 999px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.45));
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.6));
       box-shadow:
-        0 8px 20px rgba(15,23,42,0.25),
-        0 0 0 1px rgba(255,255,255,0.75);
-      backdrop-filter: blur(16px) saturate(170%);
-      -webkit-backdrop-filter: blur(16px) saturate(170%);
+        0 6px 16px rgba(15,23,42,0.25),
+        0 0 0 1px rgba(255,255,255,0.8);
     }
     .title-wrap { display: flex; align-items: center; gap: 4px; }
     .title-icon {
@@ -62,7 +60,7 @@
       height: 18px;
       border-radius: 6px;
       background: conic-gradient(from 210deg, #ff9f9f, #ffd39f, #fff49f, #a6ffcf, #9fd0ff, #d2b3ff, #ff9fef, #ff9f9f);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 3px 8px rgba(15,23,42,0.3);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 3px 7px rgba(15,23,42,0.3);
     }
     .title {
       font-weight: 800;
@@ -76,7 +74,7 @@
     .turn {
       padding: 2px 10px;
       border-radius: 999px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.98), rgba(255,255,255,0.75));
       box-shadow:
         0 3px 8px rgba(15,23,42,0.18),
         0 0 0 1px rgba(255,255,255,0.9);
@@ -94,13 +92,17 @@
       box-shadow: 0 0 8px rgba(255,92,92,0.9);
     }
     .legend {
-      opacity: 0.8;
+      opacity: 0.85;
       font-size: 11px;
       padding: 2px 8px;
       border-radius: 999px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.5));
+      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.96), rgba(255,255,255,0.6));
       box-shadow: 0 3px 8px rgba(15,23,42,0.18);
       text-align: right;
+      max-width: 45%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .canvas-wrap {
       position: relative;
@@ -113,8 +115,6 @@
         0 0 0 1px rgba(255,255,255,0.9);
       overflow: hidden;
       background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
-      backdrop-filter: blur(28px) saturate(160%);
-      -webkit-backdrop-filter: blur(28px) saturate(160%);
       touch-action: none;
     }
     canvas {
@@ -214,6 +214,30 @@
         0 0 0 0.8px rgba(248,113,113,0.9);
       color: #3b0b0b;
     }
+    .mode-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.6);
+      font-size: 10px;
+      align-items: center;
+    }
+    .mode-toggle button {
+      border: none;
+      background: transparent;
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 10px;
+      cursor: pointer;
+      color: #4b5563;
+    }
+    .mode-toggle button.active {
+      background: rgba(37,99,235,0.14);
+      color: #1d4ed8;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body>
@@ -227,7 +251,15 @@
         <span class="turn-dot" id="turnDot"></span>
         <span id="turnText">红方回合</span>
       </div>
-      <div class="legend">手机/电脑单指按住纸飞机快速甩动 · 拾取道具强化属性</div>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <div class="mode-toggle">
+          <span>模式</span>
+          <button id="modePvp" class="active">对战</button>
+          <button id="modePve">单人</button>
+          <button id="modeStage">冲关</button>
+        </div>
+        <div class="legend" id="legendText">手机/电脑：按住纸飞机快速甩动 · 拾取道具强化属性</div>
+      </div>
     </div>
     <div class="canvas-wrap">
       <canvas id="game"></canvas>
@@ -236,11 +268,11 @@
         <div id="menuPanel" class="panel">
           <div class="panel-inner">
             <h1>纸上飞机大战</h1>
-            <p>本地双人 · 手机/电脑兼容 · 纸飞机有生命值与护盾，拾取随机道具提升攻击或恢复状态。</p>
+            <p id="menuDesc">本地对战 / 单人 / 冲关模式 · 纸上纸飞机的多种玩法，手机和电脑都能玩。</p>
             <div class="btns">
               <button id="startBtn" class="btn primary">
                 开始游戏
-                <span class="badge">单指甩动纸飞机</span>
+                <span class="badge" id="modeBadge">当前模式：对战（回合制）</span>
               </button>
             </div>
           </div>
@@ -273,6 +305,9 @@
     const canvas = document.getElementById('game');
     const uiLayer = document.getElementById('ui');
     const menuPanel = document.getElementById('menuPanel');
+    const menuDesc = document.getElementById('menuDesc');
+    const modeBadge = document.getElementById('modeBadge');
+    const legendText = document.getElementById('legendText');
     const gameOverPanel = document.getElementById('gameOverPanel');
     const gameOverTitle = document.getElementById('gameOverTitle');
     const gameOverMsg = document.getElementById('gameOverMsg');
@@ -280,6 +315,9 @@
     const restartBtn = document.getElementById('restartBtn');
     const turnDot = document.getElementById('turnDot');
     const turnText = document.getElementById('turnText');
+    const modePvpBtn = document.getElementById('modePvp');
+    const modePveBtn = document.getElementById('modePve');
+    const modeStageBtn = document.getElementById('modeStage');
     const ctx = canvas.getContext('2d');
 
     let DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
@@ -301,8 +339,13 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    const MODE_PVP = 'pvp';
+    const MODE_PVE = 'pve';
+    const MODE_STAGE = 'stage';
+
     const state = {
       gamePhase: 'menu',
+      mode: MODE_PVP,
       currentPlayer: 0,
       gameOver: false,
       strokes: [],
@@ -310,7 +353,31 @@
       flick: null,
       turnCue: null,
       planes: [[], []],
-      powerups: []
+      powerups: [],
+      ai: {
+        pendingAction: null,
+        thinking: false,
+        thinkTimer: 0
+      },
+      stage: {
+        running: false,
+        player: null,
+        bullets: [],
+        enemies: [],
+        enemyBullets: [],
+        powerItems: [],
+        scrollY: 0,
+        spawnTimer: 0,
+        shotTimer: 0,
+        score: 0,
+        lives: 3,
+        chain: 0,
+        chainTimer: 0,
+        powerLevel: 1,
+        bombCount: 1,
+        bombActive: false,
+        bombTimer: 0
+      }
     };
 
     const BASE_HP = 4;
@@ -478,15 +545,7 @@
       ctx.lineWidth = 1;
       ctx.stroke();
 
-      ctx.globalAlpha = 0.05 * plane.alpha;
-      ctx.fillStyle = '#000';
-      for (let i = 0; i < 40; i++) {
-        const rx = (Math.random() - 0.5) * s * 0.7;
-        const ry = (Math.random() - 0.5) * s * 0.7;
-        ctx.beginPath();
-        ctx.arc(rx, ry, Math.random() * 1.8 + 0.3, 0, Math.PI * 2);
-        ctx.fill();
-      }
+      // 为了避免冲关模式下抖动，这里彻底去掉噪点填充
       ctx.restore();
 
       const hpRatio = plane.hp / plane.maxHP;
@@ -831,18 +890,26 @@
       const rect = canvas.getBoundingClientRect();
       return {
         x: (clientX - rect.left) / SCALE_X,
-        y: (clientY - rect.top)  / SCALE_Y
+        y: (clientY - rect.top) / SCALE_Y
       };
     }
 
-    function isPlaneSelectable(plane) {
-      return plane.alive && ((state.currentPlayer === 0 && plane.color === '#ff5c5c') || (state.currentPlayer === 1 && plane.color === '#4da3ff'));
+    function isPlaneSelectableByHuman(plane, side) {
+      if (!plane.alive) return false;
+      if (state.mode === MODE_PVP) {
+        return (side === 0 && plane.color === '#ff5c5c') || (side === 1 && plane.color === '#4da3ff');
+      } else if (state.mode === MODE_PVE) {
+        return side === 0 && plane.color === '#ff5c5c';
+      } else {
+        return false;
+      }
     }
 
     function pickPlaneAt(x, y) {
+      if (state.mode === MODE_STAGE) return null;
       const side = state.currentPlayer;
       for (const plane of state.planes[side]) {
-        if (!isPlaneSelectable(plane)) continue;
+        if (!isPlaneSelectableByHuman(plane, side)) continue;
         const tri = getTriangleVertices(plane);
         if (pointInTriangle({ x, y }, tri)) return plane;
         const dx = x - plane.x, dy = y - plane.y;
@@ -852,10 +919,20 @@
     }
 
     function handlePointerDown(clientX, clientY) {
-      if (state.gamePhase !== 'playing' || state.gameOver || state.flick) return;
+      if (state.gamePhase !== 'playing' || state.gameOver) return;
+      const p = canvasToLocalPoint(clientX, clientY);
+
+      if (state.mode === MODE_STAGE && state.stage.running && state.stage.player) {
+        pointerDown = true;
+        state.stage.player.dragOffsetX = p.x - state.stage.player.x;
+        state.stage.player.dragOffsetY = p.y - state.stage.player.y;
+        return;
+      }
+
+      if (state.flick) return;
+      if (state.mode === MODE_PVE && state.currentPlayer === 1) return;
       pointerDown = true;
       trace = [];
-      const p = canvasToLocalPoint(clientX, clientY);
       selectedPlane = pickPlaneAt(p.x, p.y);
       if (selectedPlane) {
         canvas.style.cursor = 'grabbing';
@@ -864,8 +941,17 @@
     }
 
     function handlePointerMove(clientX, clientY) {
-      if (!pointerDown || !selectedPlane) return;
+      if (!pointerDown) return;
       const p = canvasToLocalPoint(clientX, clientY);
+
+      if (state.mode === MODE_STAGE && state.stage.running && state.stage.player) {
+        const pl = state.stage.player;
+        pl.x = Math.max(40, Math.min(CANVAS_BASE_W - 40, p.x - (pl.dragOffsetX || 0)));
+        pl.y = Math.max(80, Math.min(CANVAS_BASE_H - 40, p.y - (pl.dragOffsetY || 0)));
+        return;
+      }
+
+      if (!selectedPlane) return;
       const now = performance.now();
       trace.push({ x: p.x, y: p.y, t: now });
       while (trace.length && now - trace[0].t > 150) trace.shift();
@@ -875,6 +961,11 @@
       if (!pointerDown) return;
       pointerDown = false;
       canvas.style.cursor = 'crosshair';
+
+      if (state.mode === MODE_STAGE) {
+        return;
+      }
+
       if (!selectedPlane) return;
       if (trace.length < 2) { selectedPlane = null; return; }
       const last = trace[trace.length - 1];
@@ -898,24 +989,21 @@
         pos: { x: start.x, y: start.y },
         vel: { x: vx, y: vy },
         points,
-        color: '#000'
+        color: '#000',
+        isAI: false
       };
       selectedPlane = null;
     }
 
-    canvas.addEventListener('mousedown', (e) => {
-      handlePointerDown(e.clientX, e.clientY);
-    });
-    canvas.addEventListener('mousemove', (e) => {
-      handlePointerMove(e.clientX, e.clientY);
-    });
+    canvas.addEventListener('mousedown', (e) => { handlePointerDown(e.clientX, e.clientY); });
+    canvas.addEventListener('mousemove', (e) => { handlePointerMove(e.clientX, e.clientY); });
     canvas.addEventListener('mouseup', () => { handlePointerUp(); });
 
     canvas.addEventListener('touchstart', (e) => {
       if (e.touches.length > 1) return;
       const t = e.touches[0];
       handlePointerDown(t.clientX, t.clientY);
-    }, { passive: false });
+    }, { passive: true });
 
     canvas.addEventListener('touchmove', (e) => {
       if (e.touches.length > 1) return;
@@ -924,9 +1012,7 @@
       handlePointerMove(t.clientX, t.clientY);
     }, { passive: false });
 
-    canvas.addEventListener('touchend', () => {
-      handlePointerUp();
-    });
+    canvas.addEventListener('touchend', () => { handlePointerUp(); });
 
     canvas.addEventListener('mouseleave', () => {
       if (pointerDown) {
@@ -974,51 +1060,93 @@
 
     function updateTurnHUD() {
       if (state.gameOver) return;
-      const isRed = state.currentPlayer === 0;
-      turnText.textContent = isRed ? '红方回合' : '蓝方回合';
-      const color = isRed ? '#ff5c5c' : '#4da3ff';
+      if (state.mode === MODE_STAGE) {
+        turnText.textContent = '冲关模式';
+        turnDot.style.background = '#22c55e';
+        turnDot.style.boxShadow = '0 0 10px #22c55e';
+        return;
+      }
+      const isRedTurn = state.currentPlayer === 0;
+      if (state.mode === MODE_PVP) {
+        turnText.textContent = isRedTurn ? '红方回合' : '蓝方回合';
+      } else {
+        turnText.textContent = isRedTurn ? '玩家回合' : 'AI 回合';
+      }
+      const color = isRedTurn ? '#ff5c5c' : '#4da3ff';
       turnDot.style.background = color;
       turnDot.style.boxShadow = `0 0 10px ${color}`;
     }
 
     function checkWin() {
+      if (state.mode === MODE_STAGE) return;
       const redAlive = state.planes[0].some(p => p.alive);
       const blueAlive = state.planes[1].some(p => p.alive);
       if (!redAlive || !blueAlive) {
         state.gameOver = true;
         state.gamePhase = 'gameover';
-        const msg = !redAlive && !blueAlive ? '平局' : (!redAlive ? '蓝方胜利' : '红方胜利');
+        let msg;
+        if (!redAlive && !blueAlive) msg = '平局';
+        else if (!redAlive) msg = state.mode === MODE_PVE ? '你被击败了' : '蓝方胜利';
+        else msg = state.mode === MODE_PVE ? '你赢了！' : '红方胜利';
         gameOverTitle.textContent = msg;
-        gameOverMsg.textContent = '手机上同样可以再战一局，继续甩动纸飞机。';
+        gameOverMsg.textContent = state.mode === MODE_PVE
+          ? '继续挑战 AI，或者切换到对战模式和朋友对战。'
+          : '手机上同样可以再战一局，继续甩动纸飞机。';
         menuPanel.style.display = 'none';
         gameOverPanel.style.display = '';
         uiLayer.style.display = 'grid';
       }
     }
 
-    function endTurn() {
-      state.currentPlayer = state.currentPlayer === 0 ? 1 : 0;
-      const text = state.currentPlayer === 0 ? '红方回合' : '蓝方回合';
-      const color = state.currentPlayer === 0 ? '#ff5c5c' : '#4da3ff';
-      state.turnCue = { text, color, alpha: 1, life: 60 };
-      updateTurnHUD();
-      checkWin();
+    function scheduleRandomPowerup() {
       if (!state.gameOver && Math.random() < 0.6) {
         spawnRandomPowerup();
       }
     }
 
+    function endTurn(fromAI = false) {
+      if (state.mode === MODE_STAGE) return;
+      state.currentPlayer = state.currentPlayer === 0 ? 1 : 0;
+      const isRedTurn = state.currentPlayer === 0;
+      let text, color;
+      if (state.mode === MODE_PVP) {
+        text = isRedTurn ? '红方回合' : '蓝方回合';
+      } else {
+        text = isRedTurn ? '玩家回合' : 'AI 回合';
+      }
+      color = isRedTurn ? '#ff5c5c' : '#4da3ff';
+      state.turnCue = { text, color, alpha: 1, life: 60 };
+      updateTurnHUD();
+      checkWin();
+      if (state.gameOver) return;
+      scheduleRandomPowerup();
+
+      if (state.mode === MODE_PVE && state.currentPlayer === 1 && !fromAI) {
+        startAiTurn();
+      }
+    }
+
     function newGame() {
-      state.gamePhase = 'playing';
-      state.currentPlayer = 0;
       state.gameOver = false;
       state.strokes = [];
       state.effects = [];
       state.flick = null;
-      state.turnCue = { text: '红方回合', color: '#ff5c5c', alpha: 1, life: 60 };
       state.powerups = [];
-      initPlanes();
-      updateTurnHUD();
+      state.turnCue = null;
+
+      if (state.mode === MODE_STAGE) {
+        startStageMode();
+      } else {
+        state.gamePhase = 'playing';
+        state.currentPlayer = 0;
+        state.ai.pendingAction = null;
+        state.ai.thinking = false;
+        state.ai.thinkTimer = 0;
+        initPlanes();
+        state.turnCue = { text: state.mode === MODE_PVP ? '红方回合' : '玩家回合', color: '#ff5c5c', alpha: 1, life: 60 };
+        updateTurnHUD();
+      }
+
       menuPanel.style.display = 'none';
       gameOverPanel.style.display = 'none';
       uiLayer.style.display = 'none';
@@ -1028,20 +1156,525 @@
     restartBtn.addEventListener('click', () => { newGame(); });
     window.addEventListener('keydown', (e) => {
       if (e.key.toLowerCase() === 'r') { newGame(); }
+      if (e.key.toLowerCase() === 'b' && state.mode === MODE_STAGE && state.stage.running) {
+        triggerStageBomb();
+      }
     });
+
+    function setMode(mode) {
+      state.mode = mode;
+      modePvpBtn.classList.toggle('active', mode === MODE_PVP);
+      modePveBtn.classList.toggle('active', mode === MODE_PVE);
+      modeStageBtn.classList.toggle('active', mode === MODE_STAGE);
+
+      if (mode === MODE_PVP) {
+        modeBadge.textContent = '当前模式：对战（回合制）';
+        menuDesc.textContent = '本地对战模式 · 双方轮流甩动纸飞机，利用道具和走位取得胜利。';
+        legendText.textContent = '对战模式：按住己方纸飞机快速甩动 · 击穿敌机并拾取道具。';
+      } else if (mode === MODE_PVE) {
+        modeBadge.textContent = '当前模式：单人（对战 AI）';
+        menuDesc.textContent = '单人模式 · 你操控红方纸飞机，蓝方由 AI 控制，体验躲避与进攻的乐趣。';
+        legendText.textContent = '单人模式：你操控红方，蓝方由 AI 出招。';
+      } else {
+        modeBadge.textContent = '当前模式：冲关模式（纵版射击）';
+        menuDesc.textContent = '冲关模式 · 纸飞机自动多向射击，拖动躲避弹幕，使用炸弹清屏。';
+        legendText.textContent = '冲关模式：拖动纸飞机躲避弹幕，飞机自动射击，按 B 键释放炸弹清屏。';
+      }
+      updateTurnHUD();
+    }
+
+    modePvpBtn.addEventListener('click', () => setMode(MODE_PVP));
+    modePveBtn.addEventListener('click', () => setMode(MODE_PVE));
+    modeStageBtn.addEventListener('click', () => setMode(MODE_STAGE));
+
+    function chooseAiPlaneAndTarget() {
+      const mySide = 1;
+      const enemySide = 0;
+      const myPlanes = state.planes[mySide].filter(p => p.alive);
+      const enemyPlanes = state.planes[enemySide].filter(p => p.alive);
+      if (!myPlanes.length || !enemyPlanes.length) return null;
+
+      let bestEnemy = null;
+      let bestDist = Infinity;
+      for (const e of enemyPlanes) {
+        const dx = e.x - CANVAS_BASE_W * 0.65;
+        const dy = e.y - CANVAS_BASE_H * 0.5;
+        const d = Math.hypot(dx, dy);
+        if (d < bestDist) { bestDist = d; bestEnemy = e; }
+      }
+      if (!bestEnemy) return null;
+
+      let bestPlane = null;
+      bestDist = Infinity;
+      for (const p of myPlanes) {
+        const dx = p.x - bestEnemy.x;
+        const dy = p.y - bestEnemy.y;
+        const d = Math.hypot(dx, dy);
+        if (d < bestDist) { bestDist = d; bestPlane = p; }
+      }
+      if (!bestPlane) return null;
+
+      const dx = bestEnemy.x - bestPlane.x;
+      const dy = bestEnemy.y - bestPlane.y;
+      let angle = Math.atan2(dy, dx);
+      angle += (Math.random() - 0.5) * 0.35;
+      const speed = 16 + Math.random() * 6;
+      const vx = Math.cos(angle) * speed;
+      const vy = Math.sin(angle) * speed;
+
+      return { plane: bestPlane, vx, vy };
+    }
+
+    function startAiTurn() {
+      state.ai.thinking = true;
+      state.ai.thinkTimer = 30 + Math.floor(Math.random() * 30);
+      state.ai.pendingAction = null;
+    }
+
+    function updateAi() {
+      if (state.mode !== MODE_PVE) return;
+      if (state.gamePhase !== 'playing' || state.gameOver) return;
+      if (state.currentPlayer !== 1) return;
+      if (state.flick) return;
+
+      if (state.ai.thinking) {
+        state.ai.thinkTimer--;
+        if (state.ai.thinkTimer <= 0) {
+          state.ai.thinking = false;
+          state.ai.pendingAction = chooseAiPlaneAndTarget();
+        }
+        return;
+      }
+
+      if (state.ai.pendingAction) {
+        const { plane, vx, vy } = state.ai.pendingAction;
+        if (!plane || !plane.alive) {
+          state.ai.pendingAction = null;
+          endTurn(true);
+          return;
+        }
+        const start = { x: plane.x, y: plane.y };
+        const points = [{ x: start.x, y: start.y }];
+        state.flick = {
+          plane,
+          pos: { x: start.x, y: start.y },
+          vel: { x: vx, y: vy },
+          points,
+          color: '#000',
+          isAI: true
+        };
+        state.ai.pendingAction = null;
+      }
+    }
+
+    function startStageMode() {
+      const st = state.stage;
+      state.gamePhase = 'playing';
+      st.running = true;
+      st.bullets = [];
+      st.enemies = [];
+      st.enemyBullets = [];
+      st.powerItems = [];
+      st.scrollY = 0;
+      st.spawnTimer = 0;
+      st.shotTimer = 0;
+      st.score = 0;
+      st.lives = 3;
+      st.chain = 0;
+      st.chainTimer = 0;
+      st.powerLevel = 1;
+      st.bombCount = 1;
+      st.bombActive = false;
+      st.bombTimer = 0;
+      st.player = {
+        x: CANVAS_BASE_W / 2,
+        y: CANVAS_BASE_H - 120,
+        size: 30,
+        color: '#ff5c5c',
+        heading: -Math.PI / 2,
+        dragOffsetX: 0,
+        dragOffsetY: 0,
+        invincibleTimer: 0
+      };
+      updateTurnHUD();
+    }
+
+    function spawnStageEnemy() {
+      const st = state.stage;
+      const x = 80 + Math.random() * (CANVAS_BASE_W - 160);
+      const y = -40;
+      const speed = 1.4 + Math.random() * 0.8;
+      const hp = 2 + Math.floor(Math.random() * 2);
+      const typeRand = Math.random();
+      const type = typeRand < 0.75 ? 'normal' : 'fast';
+      const pattern = type === 'normal' ? 'aim' : 'spread';
+      st.enemies.push({
+        x,
+        y,
+        vy: speed,
+        size: 26,
+        hp,
+        alive: true,
+        fireCooldown: 60 + Math.random() * 60,
+        type,
+        pattern
+      });
+    }
+
+    function spawnStagePowerup(x, y) {
+      const st = state.stage;
+      const roll = Math.random();
+      let type;
+      if (roll < 0.6) type = 'power';
+      else if (roll < 0.85) type = 'bomb';
+      else type = 'heal';
+      st.powerItems.push({
+        x,
+        y,
+        vy: 1.2,
+        size: 10,
+        type,
+        alive: true
+      });
+    }
+
+    function triggerStageBomb() {
+      const st = state.stage;
+      if (!st.running || !st.player) return;
+      if (st.bombCount <= 0 || st.bombActive) return;
+      st.bombCount--;
+      st.bombActive = true;
+      st.bombTimer = 40;
+      st.enemyBullets = [];
+      for (const e of st.enemies) {
+        if (!e.alive) continue;
+        e.hp -= 3;
+        if (e.hp <= 0) {
+          e.alive = false;
+          st.score += 150;
+          state.effects.push({ type: 'splatter', x: e.x, y: e.y, color: '#4b5563', alpha: 1, radius: 30 });
+          const shards = Array.from({ length: 20 }, () => ({ angle: Math.random() * Math.PI * 2, speed: 2 + Math.random() * 2, len: 10 + Math.random() * 14, pos: 0 }));
+          state.effects.push({ type: 'explosion', x: e.x, y: e.y, color: '#38bdf8', alpha: 1, radius: 12, shards });
+        }
+      }
+    }
+
+    function updateStage() {
+      const st = state.stage;
+      if (!st.running) return;
+
+      st.scrollY += 0.8;
+
+      st.spawnTimer--;
+      if (st.spawnTimer <= 0) {
+        spawnStageEnemy();
+        const base = 40;
+        const accel = Math.max(15, 40 - Math.floor(st.score / 500));
+        st.spawnTimer = base + Math.random() * accel;
+      }
+
+      st.shotTimer--;
+      if (st.shotTimer <= 0 && st.player) {
+        const baseInterval = 12;
+        st.shotTimer = Math.max(5, baseInterval - st.powerLevel * 2);
+        const p = st.player;
+        const bulletsToAdd = [];
+        const speed = 9;
+        bulletsToAdd.push({ x: p.x, y: p.y - p.size, vx: 0, vy: -speed, size: 4 });
+        if (st.powerLevel >= 2) {
+          bulletsToAdd.push({ x: p.x - 10, y: p.y - p.size * 0.8, vx: -1.5, vy: -speed, size: 4 });
+          bulletsToAdd.push({ x: p.x + 10, y: p.y - p.size * 0.8, vx: 1.5, vy: -speed, size: 4 });
+        }
+        if (st.powerLevel >= 3) {
+          bulletsToAdd.push({ x: p.x - 20, y: p.y - p.size * 0.5, vx: -3, vy: -speed * 0.9, size: 4 });
+          bulletsToAdd.push({ x: p.x + 20, y: p.y - p.size * 0.5, vx: 3, vy: -speed * 0.9, size: 4 });
+        }
+        st.bullets.push(...bulletsToAdd);
+      }
+
+      if (st.player && st.player.invincibleTimer > 0) {
+        st.player.invincibleTimer--;
+      }
+
+      if (st.chainTimer > 0) {
+        st.chainTimer--;
+        if (st.chainTimer <= 0) {
+          st.chain = 0;
+        }
+      }
+
+      for (const b of st.bullets) {
+        b.x += b.vx || 0;
+        b.y += b.vy;
+      }
+      st.bullets = st.bullets.filter(b => b.y > -40 && b.y < CANVAS_BASE_H + 40 && b.x > -40 && b.x < CANVAS_BASE_W + 40);
+
+      for (const e of st.enemies) {
+        if (!e.alive) continue;
+        e.y += e.vy;
+        e.fireCooldown--;
+        if (e.fireCooldown <= 0 && st.player) {
+          if (e.pattern === 'aim') {
+            e.fireCooldown = 90 + Math.random() * 60;
+            const dx = st.player.x - e.x;
+            const dy = st.player.y - e.y;
+            const len = Math.hypot(dx, dy) || 1;
+            const speed = 4.2;
+            st.enemyBullets.push({ x: e.x, y: e.y + e.size * 0.2, vx: dx / len * speed, vy: dy / len * speed, size: 4 });
+          } else {
+            e.fireCooldown = 110 + Math.random() * 50;
+            const baseAngle = Math.atan2(st.player.y - e.y, st.player.x - e.x) + Math.PI / 2;
+            const speed = 3.6;
+            const count = 5;
+            for (let i = 0; i < count; i++) {
+              const a = baseAngle + (i - (count - 1) / 2) * 0.18;
+              st.enemyBullets.push({ x: e.x, y: e.y + e.size * 0.2, vx: Math.cos(a) * speed, vy: Math.sin(a) * speed, size: 4 });
+            }
+          }
+        }
+      }
+      st.enemies = st.enemies.filter(e => e.y < CANVAS_BASE_H + 60 && e.alive);
+
+      for (const b of st.enemyBullets) {
+        b.x += b.vx;
+        b.y += b.vy;
+      }
+      st.enemyBullets = st.enemyBullets.filter(b => b.y > -60 && b.y < CANVAS_BASE_H + 60 && b.x > -60 && b.x < CANVAS_BASE_W + 60);
+
+      for (const it of st.powerItems) {
+        if (!it.alive) continue;
+        it.y += it.vy;
+      }
+      st.powerItems = st.powerItems.filter(it => it.alive && it.y < CANVAS_BASE_H + 40);
+
+      for (const b of st.bullets) {
+        for (const e of st.enemies) {
+          if (!e.alive) continue;
+          const dx = b.x - e.x;
+          const dy = b.y - e.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < e.size) {
+            e.hp -= 1;
+            b.y = -9999;
+            if (e.hp <= 0) {
+              e.alive = false;
+              const bonus = 100 * (1 + st.chain * 0.2);
+              st.score += Math.floor(bonus);
+              st.chain += 1;
+              st.chainTimer = 90;
+              state.effects.push({ type: 'splatter', x: e.x, y: e.y, color: '#4b5563', alpha: 1, radius: 26 });
+              const shards = Array.from({ length: 16 }, () => ({ angle: Math.random() * Math.PI * 2, speed: 2 + Math.random() * 2, len: 10 + Math.random() * 12, pos: 0 }));
+              state.effects.push({ type: 'explosion', x: e.x, y: e.y, color: '#f97316', alpha: 1, radius: 10, shards });
+              if (Math.random() < 0.3) {
+                spawnStagePowerup(e.x, e.y);
+              }
+              if (st.powerLevel < 3 && Math.random() < 0.3) {
+                st.powerLevel++;
+              }
+              if (Math.random() < 0.1) {
+                st.bombCount = Math.min(3, st.bombCount + 1);
+              }
+            }
+          }
+        }
+      }
+      st.bullets = st.bullets.filter(b => b.y > -40);
+
+      if (st.player) {
+        for (const it of st.powerItems) {
+          if (!it.alive) continue;
+          const dx = it.x - st.player.x;
+          const dy = it.y - st.player.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < st.player.size) {
+            it.alive = false;
+            if (it.type === 'power') {
+              st.powerLevel = Math.min(3, st.powerLevel + 1);
+              st.score += 50;
+            } else if (it.type === 'bomb') {
+              st.bombCount = Math.min(3, st.bombCount + 1);
+            } else if (it.type === 'heal') {
+              st.lives = Math.min(5, st.lives + 1);
+            }
+          }
+        }
+      }
+
+      if (st.player) {
+        for (const e of st.enemies) {
+          if (!e.alive) continue;
+          const dx = e.x - st.player.x;
+          const dy = e.y - st.player.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < e.size + st.player.size * 0.6) {
+            damageStagePlayer(e.x, e.y);
+            e.alive = false;
+          }
+        }
+        for (const b of st.enemyBullets) {
+          const dx = b.x - st.player.x;
+          const dy = b.y - st.player.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist < st.player.size * 0.6) {
+            damageStagePlayer(b.x, b.y);
+            b.y = -9999;
+          }
+        }
+        st.enemyBullets = st.enemyBullets.filter(b => b.y > -40);
+      }
+
+      if (st.bombActive) {
+        st.bombTimer--;
+        if (st.bombTimer <= 0) {
+          st.bombActive = false;
+        }
+      }
+    }
+
+    function damageStagePlayer(x, y) {
+      const st = state.stage;
+      if (!st.player) return;
+      if (st.player.invincibleTimer > 0) return;
+      st.lives -= 1;
+      st.player.invincibleTimer = 90;
+      st.chain = 0;
+      st.chainTimer = 0;
+      state.effects.push({ type: 'splatter', x, y, color: '#ef4444', alpha: 1, radius: 30 });
+      const shards = Array.from({ length: 18 }, () => ({ angle: Math.random() * Math.PI * 2, speed: 2 + Math.random() * 2, len: 10 + Math.random() * 14, pos: 0 }));
+      state.effects.push({ type: 'explosion', x, y, color: '#ef4444', alpha: 1, radius: 12, shards });
+      if (st.lives <= 0) {
+        st.player = null;
+        endStageGame();
+      }
+    }
+
+    function endStageGame() {
+      const st = state.stage;
+      st.running = false;
+      state.gameOver = true;
+      state.gamePhase = 'gameover';
+      gameOverTitle.textContent = '冲关结束';
+      gameOverMsg.textContent = `得分：${st.score} · 最大连击：${st.chain} · 再试一次挑战更高段位！`;
+      menuPanel.style.display = 'none';
+      gameOverPanel.style.display = '';
+      uiLayer.style.display = 'grid';
+    }
+
+    function drawStage() {
+      const st = state.stage;
+      if (!st.running) return;
+
+      const offsetY = st.scrollY % GRID;
+      ctx.save();
+      ctx.translate(0, offsetY * 0.3);
+
+      if (st.player) {
+        const flicker = st.player.invincibleTimer > 0 && Math.floor(st.player.invincibleTimer / 6) % 2 === 0;
+        const p = {
+          x: st.player.x,
+          y: st.player.y,
+          size: st.player.size,
+          color: '#ff5c5c',
+          heading: -Math.PI / 2,
+          alpha: flicker ? 0.3 : 1,
+          maxHP: 5,
+          hp: st.lives,
+          shield: 0
+        };
+        drawPlane(p);
+      }
+
+      ctx.save();
+      ctx.fillStyle = '#0ea5e9';
+      for (const b of st.bullets) {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      for (const e of st.enemies) {
+        if (!e.alive) continue;
+        const planeLike = {
+          x: e.x,
+          y: e.y,
+          size: e.size,
+          color: e.type === 'fast' ? '#f97316' : '#4b5563',
+          heading: Math.PI / 2,
+          alpha: 1,
+          maxHP: 4,
+          hp: e.hp,
+          shield: 0
+        };
+        drawPlane(planeLike);
+      }
+
+      ctx.save();
+      ctx.fillStyle = '#f97316';
+      for (const b of st.enemyBullets) {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      if (st.powerItems) {
+        ctx.save();
+        for (const it of st.powerItems) {
+          if (!it.alive) continue;
+          let color;
+          if (it.type === 'power') color = '#38bdf8';
+          else if (it.type === 'bomb') color = '#facc15';
+          else color = '#22c55e';
+          ctx.beginPath();
+          ctx.fillStyle = color;
+          ctx.arc(it.x, it.y, it.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      ctx.restore();
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(15,23,42,0.85)';
+      ctx.font = '14px system-ui';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'top';
+      ctx.fillText(`得分：${st.score}`, 16, 16);
+      ctx.fillText(`生命：${st.lives}`, 16, 36);
+      ctx.fillText(`火力：${st.powerLevel}`, 16, 56);
+      ctx.fillText(`炸弹：${st.bombCount}`, 16, 76);
+      if (st.chain > 1 && st.chainTimer > 0) {
+        ctx.fillStyle = '#16a34a';
+        ctx.fillText(`连击：${st.chain}`, 16, 96);
+      }
+      if (st.bombActive) {
+        ctx.fillStyle = '#2563eb';
+        ctx.fillText('炸弹中...', 16, 116);
+      }
+      ctx.restore();
+    }
 
     function step() {
       drawPaperBackground();
       drawTurnCue();
-      for (const s of state.strokes) drawStroke(s.points);
-      if (state.flick) {
-        drawStroke(state.flick.points);
-        drawSpeedLines(state.flick.pos, state.flick.vel);
+
+      if (state.mode === MODE_STAGE) {
+        updateStage();
+        drawStage();
+      } else {
+        for (const s of state.strokes) drawStroke(s.points);
+        if (state.flick) {
+          drawStroke(state.flick.points);
+          drawSpeedLines(state.flick.pos, state.flick.vel);
+        }
+        drawPowerups();
+        for (const p of state.planes[0]) if (p.alive || p.alpha > 0) drawPlane(p);
+        for (const p of state.planes[1]) if (p.alive || p.alpha > 0) drawPlane(p);
+        if (pointerDown && selectedPlane) drawSelection(selectedPlane);
       }
-      drawPowerups();
-      for (const p of state.planes[0]) if (p.alive || p.alpha > 0) drawPlane(p);
-      for (const p of state.planes[1]) if (p.alive || p.alpha > 0) drawPlane(p);
-      if (pointerDown && selectedPlane) drawSelection(selectedPlane);
+
       drawEffects();
       for (const side of [0,1]) {
         for (const p of state.planes[side]) {
@@ -1049,7 +1682,7 @@
         }
       }
 
-      if (state.flick) {
+      if (state.flick && state.mode !== MODE_STAGE) {
         const f = state.flick;
         const prevPos = { x: f.pos.x, y: f.pos.y };
         f.vel.x *= FRICTION;
@@ -1072,10 +1705,13 @@
           f.plane.x = f.pos.x;
           f.plane.y = f.pos.y;
           tryPickupPowerups(f.plane);
+          const wasAI = !!f.isAI;
           state.flick = null;
-          endTurn();
+          endTurn(wasAI);
         }
       }
+
+      updateAi();
 
       requestAnimationFrame(step);
     }
