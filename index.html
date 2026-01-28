@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>纸上飞机大战</title>
   <style>
     :root {
@@ -14,7 +14,7 @@
       --blue: #4da3ff;
       --ink: rgba(0,0,0,0.85);
     }
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     html, body { height: 100%; }
     body {
       margin: 0;
@@ -27,96 +27,102 @@
       -webkit-font-smoothing: antialiased;
     }
     .app {
-      width: min(92vw, 1000px);
-      aspect-ratio: 4 / 3;
+      width: min(100vw, 1000px);
+      height: min(100vh, 750px);
+      max-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       user-select: none;
-      padding: 12px 12px 16px;
-      border-radius: 32px;
+      padding: 8px 10px 10px;
+      border-radius: 24px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
       box-shadow:
-        0 24px 60px rgba(15,23,42,0.45),
-        0 0 0 1px rgba(255,255,255,0.6);
-      backdrop-filter: blur(26px) saturate(160%);
-      -webkit-backdrop-filter: blur(26px) saturate(160%);
+        0 18px 50px rgba(15,23,42,0.45),
+        0 0 0 1px rgba(255,255,255,0.7);
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+    }
+    @media (max-width: 768px) {
+      .app { border-radius: 0; height: 100vh; width: 100vw; box-shadow: none; }
     }
     .hud {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      font-size: 12px;
       padding: 6px 10px;
       border-radius: 999px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.45));
       box-shadow:
-        0 10px 25px rgba(15,23,42,0.25),
+        0 8px 20px rgba(15,23,42,0.25),
         0 0 0 1px rgba(255,255,255,0.75);
-      backdrop-filter: blur(18px) saturate(170%);
-      -webkit-backdrop-filter: blur(18px) saturate(170%);
+      backdrop-filter: blur(16px) saturate(170%);
+      -webkit-backdrop-filter: blur(16px) saturate(170%);
     }
-    .title-wrap { display: flex; align-items: center; gap: 6px; }
+    .title-wrap { display: flex; align-items: center; gap: 4px; }
     .title-icon {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       border-radius: 6px;
       background: conic-gradient(from 210deg, #ff9f9f, #ffd39f, #fff49f, #a6ffcf, #9fd0ff, #d2b3ff, #ff9fef, #ff9f9f);
-      box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 4px 10px rgba(15,23,42,0.3);
+      box-shadow: 0 0 0 1px rgba(255,255,255,0.9), 0 3px 8px rgba(15,23,42,0.3);
     }
     .title {
       font-weight: 800;
-      letter-spacing: 0.6px;
-      font-size: 16px;
+      letter-spacing: 0.5px;
+      font-size: 14px;
       background: linear-gradient(120deg, #111827, #2563eb);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
     }
     .turn {
-      padding: 4px 12px;
+      padding: 2px 10px;
       border-radius: 999px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
       box-shadow:
-        0 4px 10px rgba(15,23,42,0.18),
+        0 3px 8px rgba(15,23,42,0.18),
         0 0 0 1px rgba(255,255,255,0.9);
       font-weight: 600;
-      font-size: 13px;
+      font-size: 11px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
     .turn-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #ff5c5c;
       box-shadow: 0 0 8px rgba(255,92,92,0.9);
     }
     .legend {
-      opacity: 0.75;
-      font-size: 12px;
-      padding: 2px 10px;
+      opacity: 0.8;
+      font-size: 11px;
+      padding: 2px 8px;
       border-radius: 999px;
       background: radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.5));
-      box-shadow: 0 4px 10px rgba(15,23,42,0.18);
+      box-shadow: 0 3px 8px rgba(15,23,42,0.18);
+      text-align: right;
     }
     .canvas-wrap {
       position: relative;
       flex: 1;
       width: 100%;
       margin-top: 4px;
-      border-radius: 24px;
+      border-radius: 18px;
       box-shadow:
-        0 20px 40px rgba(15,23,42,0.35),
+        0 16px 32px rgba(15,23,42,0.35),
         0 0 0 1px rgba(255,255,255,0.9);
       overflow: hidden;
       background: radial-gradient(circle at 20% 0%, rgba(255,255,255,0.96), rgba(255,255,255,0.88));
-      backdrop-filter: blur(30px) saturate(160%);
-      -webkit-backdrop-filter: blur(30px) saturate(160%);
+      backdrop-filter: blur(28px) saturate(160%);
+      -webkit-backdrop-filter: blur(28px) saturate(160%);
+      touch-action: none;
     }
     canvas {
       width: 100%;
@@ -124,6 +130,7 @@
       display: block;
       background: transparent;
       cursor: crosshair;
+      touch-action: none;
     }
     .overlay {
       position: absolute;
@@ -132,7 +139,7 @@
       place-items: center;
       pointer-events: none;
       font-weight: 800;
-      font-size: clamp(20px, 4vw, 42px);
+      font-size: clamp(18px, 3.6vw, 32px);
       color: rgba(0,0,0,0.75);
       text-shadow: 0 2px 0 rgba(255,255,255,0.7);
     }
@@ -144,14 +151,14 @@
       pointer-events: auto;
     }
     .panel {
-      min-width: 60%;
-      max-width: 80%;
-      padding: 22px 24px 20px;
-      border-radius: 24px;
+      min-width: 70%;
+      max-width: 86%;
+      padding: 18px 20px 18px;
+      border-radius: 20px;
       background:
         radial-gradient(circle at 0 0, rgba(255,255,255,0.95), rgba(255,255,255,0.7));
       box-shadow:
-        0 18px 40px rgba(15,23,42,0.35),
+        0 16px 32px rgba(15,23,42,0.35),
         0 0 0 1px rgba(255,255,255,0.96);
       text-align: center;
       backdrop-filter: blur(24px) saturate(180%);
@@ -169,21 +176,21 @@
       pointer-events: none;
     }
     .panel-inner { position: relative; z-index: 1; }
-    .panel h1 { margin: 6px 0 0; font-size: 26px; letter-spacing: 0.05em; }
-    .panel p { margin: 8px 0 14px; opacity: 0.8; font-size: 13px; }
-    .btns { display: flex; gap: 12px; justify-content: center; margin-top: 4px; }
+    .panel h1 { margin: 4px 0 0; font-size: 22px; letter-spacing: 0.06em; }
+    .panel p { margin: 6px 0 12px; opacity: 0.85; font-size: 12px; }
+    .btns { display: flex; gap: 10px; justify-content: center; margin-top: 4px; flex-wrap: wrap; }
     .btn {
       appearance: none;
-      padding: 10px 18px;
+      padding: 8px 16px;
       border-radius: 999px;
       border: 1px solid rgba(255,255,255,0.9);
       background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(240,246,255,0.96));
       box-shadow:
-        0 10px 20px rgba(15,23,42,0.25),
+        0 8px 18px rgba(15,23,42,0.25),
         0 0 0 0.8px rgba(148,163,184,0.7);
       cursor: pointer;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       color: #0f172a;
       display: inline-flex;
       align-items: center;
@@ -196,27 +203,21 @@
       border-radius: 999px;
       background: rgba(15,23,42,0.06);
     }
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow:
-        0 12px 24px rgba(15,23,42,0.3),
-        0 0 0 1px rgba(148,163,184,0.9);
-    }
     .btn:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: 0 6px 14px rgba(15,23,42,0.3);
+      transform: translateY(1px) scale(0.97);
+      box-shadow: 0 4px 10px rgba(15,23,42,0.3);
     }
     .btn.primary {
       background: radial-gradient(circle at 0 0, #e0f2ff, #c4daff);
       box-shadow:
-        0 12px 24px rgba(37,99,235,0.4),
+        0 10px 20px rgba(37,99,235,0.4),
         0 0 0 0.8px rgba(59,130,246,0.8);
       color: #0b1f3b;
     }
     .btn.danger {
       background: radial-gradient(circle at 0 0, #ffe4e4, #ffc3c3);
       box-shadow:
-        0 12px 24px rgba(248,113,113,0.5),
+        0 10px 20px rgba(248,113,113,0.5),
         0 0 0 0.8px rgba(248,113,113,0.9);
       color: #3b0b0b;
     }
@@ -233,7 +234,7 @@
         <span class="turn-dot" id="turnDot"></span>
         <span id="turnText">红方回合</span>
       </div>
-      <div class="legend">按住彩色纸飞机快速甩动，用航线穿过敌机 · 拾取道具强化属性</div>
+      <div class="legend">手机上用单指按住纸飞机快速甩动 · 拾取道具强化属性</div>
     </div>
     <div class="canvas-wrap">
       <canvas id="game"></canvas>
@@ -242,11 +243,11 @@
         <div id="menuPanel" class="panel">
           <div class="panel-inner">
             <h1>纸上飞机大战</h1>
-            <p>本地双人 · 纸飞机有生命值与护盾，拾取随机道具提升攻击或恢复状态。</p>
+            <p>本地双人 · 手机/电脑兼容 · 纸飞机有生命值与护盾，拾取随机道具提升攻击或恢复状态。</p>
             <div class="btns">
               <button id="startBtn" class="btn primary">
                 开始游戏
-                <span class="badge">双人对战</span>
+                <span class="badge">单指甩动纸飞机</span>
               </button>
             </div>
           </div>
@@ -258,7 +259,7 @@
             <div class="btns">
               <button id="restartBtn" class="btn danger">
                 重新开始
-                <span class="badge">R 键</span>
+                <span class="badge">轻触按钮 / R 键</span>
               </button>
             </div>
           </div>
@@ -277,7 +278,6 @@
     const SELECT_HALO = 10;
 
     const canvas = document.getElementById('game');
-    const overlay = document.getElementById('overlay');
     const uiLayer = document.getElementById('ui');
     const menuPanel = document.getElementById('menuPanel');
     const gameOverPanel = document.getElementById('gameOverPanel');
@@ -285,7 +285,6 @@
     const gameOverMsg = document.getElementById('gameOverMsg');
     const startBtn = document.getElementById('startBtn');
     const restartBtn = document.getElementById('restartBtn');
-    const turnEl = document.getElementById('turn');
     const turnDot = document.getElementById('turnDot');
     const turnText = document.getElementById('turnText');
     const ctx = canvas.getContext('2d');
@@ -297,13 +296,26 @@
 
     function resizeCanvas() {
       const rect = canvas.parentElement.getBoundingClientRect();
-      viewW = Math.round(rect.width);
-      viewH = Math.round(rect.height);
+      const targetAspect = CANVAS_BASE_W / CANVAS_BASE_H;
+      let w = rect.width;
+      let h = rect.height;
+      const currentAspect = w / h;
+      if (currentAspect > targetAspect) {
+        w = h * targetAspect;
+      } else {
+        h = w / targetAspect;
+      }
+      viewW = Math.round(w);
+      viewH = Math.round(h);
       DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
       SCALE_X = viewW / CANVAS_BASE_W;
       SCALE_Y = viewH / CANVAS_BASE_H;
       canvas.width = viewW * DPR;
       canvas.height = viewH * DPR;
+      const offsetX = (rect.width - viewW) / 2;
+      const offsetY = (rect.height - viewH) / 2;
+      canvas.style.marginLeft = offsetX + 'px';
+      canvas.style.marginTop = offsetY + 'px';
       ctx.setTransform(DPR * SCALE_X, 0, 0, DPR * SCALE_Y, 0, 0);
     }
     window.addEventListener('resize', resizeCanvas);
@@ -359,7 +371,6 @@
     function drawPaperBackground() {
       ctx.fillStyle = '#f8fafc';
       ctx.fillRect(0, 0, CANVAS_BASE_W, CANVAS_BASE_H);
-
       const radial = ctx.createRadialGradient(
         CANVAS_BASE_W / 2,
         CANVAS_BASE_H / 2,
@@ -836,11 +847,11 @@
     let selectedPlane = null;
     let trace = [];
 
-    function canvasToLocal(e) {
+    function canvasToLocalPoint(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       return {
-        x: (e.clientX - rect.left) / SCALE_X,
-        y: (e.clientY - rect.top) / SCALE_Y
+        x: (clientX - rect.left - (rect.width - viewW) / 2) / SCALE_X,
+        y: (clientY - rect.top - (rect.height - viewH) / 2) / SCALE_Y
       };
     }
 
@@ -860,31 +871,27 @@
       return null;
     }
 
-    canvas.addEventListener('mousedown', (e) => {
+    function handlePointerDown(clientX, clientY) {
       if (state.gamePhase !== 'playing' || state.gameOver || state.flick) return;
       pointerDown = true;
       trace = [];
-      const p = canvasToLocal(e);
+      const p = canvasToLocalPoint(clientX, clientY);
       selectedPlane = pickPlaneAt(p.x, p.y);
       if (selectedPlane) {
         canvas.style.cursor = 'grabbing';
         trace.push({ x: p.x, y: p.y, t: performance.now() });
       }
-    });
+    }
 
-    canvas.addEventListener('mousemove', (e) => {
+    function handlePointerMove(clientX, clientY) {
       if (!pointerDown || !selectedPlane) return;
-      const p = canvasToLocal(e);
+      const p = canvasToLocalPoint(clientX, clientY);
       const now = performance.now();
       trace.push({ x: p.x, y: p.y, t: now });
       while (trace.length && now - trace[0].t > 150) trace.shift();
-    });
-
-    function clampToCanvas(pt) {
-      return { x: Math.max(10, Math.min(CANVAS_BASE_W - 10, pt.x)), y: Math.max(10, Math.min(CANVAS_BASE_H - 10, pt.y)) };
     }
 
-    canvas.addEventListener('mouseup', () => {
+    function handlePointerUp() {
       if (!pointerDown) return;
       pointerDown = false;
       canvas.style.cursor = 'crosshair';
@@ -914,6 +921,31 @@
         color: '#000'
       };
       selectedPlane = null;
+    }
+
+    canvas.addEventListener('mousedown', (e) => {
+      handlePointerDown(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('mousemove', (e) => {
+      handlePointerMove(e.clientX, e.clientY);
+    });
+    canvas.addEventListener('mouseup', () => { handlePointerUp(); });
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 1) return;
+      const t = e.touches[0];
+      handlePointerDown(t.clientX, t.clientY);
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 1) return;
+      e.preventDefault();
+      const t = e.touches[0];
+      handlePointerMove(t.clientX, t.clientY);
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      handlePointerUp();
     });
 
     canvas.addEventListener('mouseleave', () => {
@@ -924,6 +956,10 @@
         canvas.style.cursor = 'crosshair';
       }
     });
+
+    function clampToCanvas(pt) {
+      return { x: Math.max(10, Math.min(CANVAS_BASE_W - 10, pt.x)), y: Math.max(10, Math.min(CANVAS_BASE_H - 10, pt.y)) };
+    }
 
     function applyDamageToPlane(plane, damage) {
       let dmgLeft = damage;
@@ -973,7 +1009,7 @@
         state.gamePhase = 'gameover';
         const msg = !redAlive && !blueAlive ? '平局' : (!redAlive ? '蓝方胜利' : '红方胜利');
         gameOverTitle.textContent = msg;
-        gameOverMsg.textContent = '拾取道具，合理走位，再来一局手感对战。';
+        gameOverMsg.textContent = '手机上同样可以再战一局，继续甩动纸飞机。';
         menuPanel.style.display = 'none';
         gameOverPanel.style.display = '';
         uiLayer.style.display = 'grid';
@@ -1017,23 +1053,16 @@
     function step() {
       drawPaperBackground();
       drawTurnCue();
-
       for (const s of state.strokes) drawStroke(s.points);
-
       if (state.flick) {
         drawStroke(state.flick.points);
         drawSpeedLines(state.flick.pos, state.flick.vel);
       }
-
       drawPowerups();
-
       for (const p of state.planes[0]) if (p.alive || p.alpha > 0) drawPlane(p);
       for (const p of state.planes[1]) if (p.alive || p.alpha > 0) drawPlane(p);
-
       if (pointerDown && selectedPlane) drawSelection(selectedPlane);
-
       drawEffects();
-
       for (const side of [0,1]) {
         for (const p of state.planes[side]) {
           if (!p.alive && p.alpha > 0) p.alpha -= 0.05;
