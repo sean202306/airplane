@@ -14,39 +14,32 @@
       --blue: #4da3ff;
       --ink: rgba(0,0,0,0.85);
     }
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { height: 100%; }
-    body {
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    html, body {
+      height: 100%;
       margin: 0;
+      padding: 0;
+    }
+    body {
       display: flex;
-      align-items: center;
-      justify-content: center;
       background: radial-gradient(circle at top, #e5f0ff, #cad5ff 32%, #b0b8ff 60%, #8b9eff 100%);
       font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
     .app {
-      width: min(100vw, 1000px);
-      height: min(100vh, 750px);
-      max-height: 100vh;
+      width: 100vw;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       user-select: none;
-      padding: 8px 10px 10px;
-      border-radius: 24px;
-      background: radial-gradient(circle at 0 0, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
-      box-shadow:
-        0 18px 50px rgba(15,23,42,0.45),
-        0 0 0 1px rgba(255,255,255,0.7);
-      backdrop-filter: blur(22px) saturate(160%);
-      -webkit-backdrop-filter: blur(22px) saturate(160%);
-    }
-    @media (max-width: 768px) {
-      .app { border-radius: 0; height: 100vh; width: 100vw; box-shadow: none; }
+      padding: 6px 8px 8px;
     }
     .hud {
       width: 100%;
@@ -234,7 +227,7 @@
         <span class="turn-dot" id="turnDot"></span>
         <span id="turnText">红方回合</span>
       </div>
-      <div class="legend">手机上用单指按住纸飞机快速甩动 · 拾取道具强化属性</div>
+      <div class="legend">手机/电脑单指按住纸飞机快速甩动 · 拾取道具强化属性</div>
     </div>
     <div class="canvas-wrap">
       <canvas id="game"></canvas>
@@ -296,26 +289,13 @@
 
     function resizeCanvas() {
       const rect = canvas.parentElement.getBoundingClientRect();
-      const targetAspect = CANVAS_BASE_W / CANVAS_BASE_H;
-      let w = rect.width;
-      let h = rect.height;
-      const currentAspect = w / h;
-      if (currentAspect > targetAspect) {
-        w = h * targetAspect;
-      } else {
-        h = w / targetAspect;
-      }
-      viewW = Math.round(w);
-      viewH = Math.round(h);
-      DPR = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+      viewW = rect.width;
+      viewH = rect.height;
+      DPR = window.devicePixelRatio || 1;
       SCALE_X = viewW / CANVAS_BASE_W;
       SCALE_Y = viewH / CANVAS_BASE_H;
       canvas.width = viewW * DPR;
       canvas.height = viewH * DPR;
-      const offsetX = (rect.width - viewW) / 2;
-      const offsetY = (rect.height - viewH) / 2;
-      canvas.style.marginLeft = offsetX + 'px';
-      canvas.style.marginTop = offsetY + 'px';
       ctx.setTransform(DPR * SCALE_X, 0, 0, DPR * SCALE_Y, 0, 0);
     }
     window.addEventListener('resize', resizeCanvas);
@@ -850,8 +830,8 @@
     function canvasToLocalPoint(clientX, clientY) {
       const rect = canvas.getBoundingClientRect();
       return {
-        x: (clientX - rect.left - (rect.width - viewW) / 2) / SCALE_X,
-        y: (clientY - rect.top - (rect.height - viewH) / 2) / SCALE_Y
+        x: (clientX - rect.left) / SCALE_X,
+        y: (clientY - rect.top)  / SCALE_Y
       };
     }
 
@@ -944,7 +924,7 @@
       handlePointerMove(t.clientX, t.clientY);
     }, { passive: false });
 
-    canvas.addEventListener('touchend', (e) => {
+    canvas.addEventListener('touchend', () => {
       handlePointerUp();
     });
 
